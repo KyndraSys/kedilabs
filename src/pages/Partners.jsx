@@ -1,34 +1,35 @@
-import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+
+import React, { useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { 
   ChevronRight, 
   ArrowRight, 
-  CheckCircle,
-  ExternalLink,
   Building2,
   Users,
   Globe,
   Award,
   BookOpen,
   Cpu,
-  Handshake,
-  MapPin
+  Handshake
 } from 'lucide-react';
 
 const KediPartnersPage = () => {
   const navigate = useNavigate();
-
-  
   const location = useLocation();
 
+  // Scroll to section based on query parameter
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const section = params.get('section');
     if (section) {
-      const element = document.getElementById(section);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+      setTimeout(() => {
+        const element = document.getElementById(section);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100); // Delay to ensure DOM is rendered
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [location]);
 
@@ -80,13 +81,6 @@ const KediPartnersPage = () => {
     }
   ];
 
-  const impactStats = [
-    { number: '50+', label: 'Partner institutions' },
-    { number: '15', label: 'Countries reached' },
-    { number: '200,000+', label: 'Students impacted' },
-    { number: '98%', label: 'Partnership satisfaction' }
-  ];
-
   const partnershipBenefits = [
     {
       title: 'Strategic Collaboration',
@@ -110,16 +104,10 @@ const KediPartnersPage = () => {
     }
   ];
 
-  // External link handler for PDF or external URLs
-  const handleExternalLink = (url) => {
-    window.open(url, '_blank', 'noopener noreferrer');
-  };
-
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section - Narrow */}
+      {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-r from-slate-900 to-slate-800 overflow-hidden">
-        {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
@@ -130,10 +118,7 @@ const KediPartnersPage = () => {
         <div className="relative z-20 mb-8">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex items-center text-sm text-slate-400">
-              <Link 
-                to="/"
-                className="hover:text-cyan-400 transition-colors"
-              >
+              <Link to="/" className="hover:text-cyan-400 transition-colors">
                 Home
               </Link>
               <ChevronRight className="h-4 w-4 mx-2" />
@@ -142,59 +127,49 @@ const KediPartnersPage = () => {
           </div>
         </div>
 
-
-{/* Main Content */}
-<div className="relative z-20">
-  <div className="max-w-7xl mx-auto px-6 lg:px-8">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div>
-        <h1 className="text-4xl md:text-5xl font-light text-white mb-6 leading-tight">
-          Our Network of{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400 font-normal">
-            Excellence
-          </span>
-        </h1>
-        
-        <p className="text-lg text-slate-300 mb-8 leading-relaxed">
-          Discover our network of educational institutions, technology partners, and funding collaborators transforming STEM education across Africa.
-        </p>
-
-        <Link 
-          to="/contact"
-          className="group bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-medium transition-colors flex items-center justify-center w-fit"
-        >
-          Become a Partner
-          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </Link>
-      </div>
-
-              {/* Hero Image */}
+        {/* Main Content */}
+        <div className="relative z-20">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-light text-white mb-6 leading-tight">
+                  Our Network of{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400 font-normal">
+                    Excellence
+                  </span>
+                </h1>
+                <p className="text-lg text-slate-300 mb-8 leading-relaxed">
+                  Discover our network of educational institutions, technology partners, and funding collaborators transforming STEM education across Africa.
+                </p>
+                <Link 
+                  to="/contact?section=partnership"
+                  className="group bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-medium transition-colors flex items-center justify-center w-fit"
+                >
+                  Become a Partner
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
               <div className="relative">
                 <div className="bg-gradient-to-br from-green-500/20 to-cyan-500/20 rounded-2xl p-8 backdrop-blur-sm border border-white/10">
                   <div className="grid grid-cols-3 gap-4">
-                    {/* Simulated partner logos/connections */}
                     <div className="col-span-3 text-center mb-4">
                       <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
                         <Building2 className="h-8 w-8 text-white" />
                       </div>
                       <p className="text-white text-sm font-medium">Kedi Labs</p>
                     </div>
-                    
-                    {/* Connection lines visualization */}
                     <div className="flex flex-col items-center">
                       <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-2">
                         <BookOpen className="h-6 w-6 text-white" />
                       </div>
                       <p className="text-white text-xs">Universities</p>
                     </div>
-                    
                     <div className="flex flex-col items-center">
                       <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-2">
                         <Cpu className="h-6 w-6 text-white" />
                       </div>
                       <p className="text-white text-xs">Technology</p>
                     </div>
-                    
                     <div className="flex flex-col items-center">
                       <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-2">
                         <Handshake className="h-6 w-6 text-white" />
@@ -220,22 +195,25 @@ const KediPartnersPage = () => {
               We collaborate with diverse organizations to advance STEM education across Africa
             </p>
           </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {partnerCategories.map((category) => {
               const Icon = category.icon;
               return (
-                <div key={category.id} className="border rounded-lg p-8 bg-white hover:border-gray-300 transition-colors">
+                <div key={category.id} id={category.id} className="border rounded-lg p-8 bg-white hover:border-gray-300 transition-colors">
                   <div className="flex items-center mb-6">
                     <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
                       <Icon className="h-6 w-6 text-gray-600" />
                     </div>
                     <h3 className="text-xl font-medium text-gray-900">{category.title}</h3>
                   </div>
-                  
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     {category.description}
                   </p>
+                  <ul className="text-gray-600 text-sm">
+                    {category.partners.map((partner, index) => (
+                      <li key={index} className="mb-2">{partner}</li>
+                    ))}
+                  </ul>
                 </div>
               );
             })}
@@ -254,7 +232,6 @@ const KediPartnersPage = () => {
               Join our network and unlock opportunities for collaboration, growth, and impact
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {partnershipBenefits.map((benefit, index) => {
               const Icon = benefit.icon;
@@ -283,17 +260,14 @@ const KediPartnersPage = () => {
             Whether you're an educational institution, technology provider, or funding organization, 
             we'd love to explore partnership opportunities.
           </p>
-          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              to="/contact"
+              to="/contact?section=partnership"
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-medium transition-colors flex items-center justify-center group"
             >
               Discuss Partnership
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
-            
-            
           </div>
         </div>
       </section>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronRight, Phone, Mail, MapPin, Users, GraduationCap, Building2, Send, CheckCircle, AlertCircle, Loader2, Globe, Clock, MessageSquare, HandHeart, Calendar, Coins } from 'lucide-react';
+import { ChevronRight, Phone, Mail, MapPin, Building2, Send, CheckCircle, AlertCircle, Loader2, Globe, Clock, MessageSquare, HandHeart, Calendar, Coins } from 'lucide-react';
+import { sendContactEmail } from '../lib/email';
 
 const KediLabsContact = () => {
   const [activeForm, setActiveForm] = useState('contact');
@@ -18,8 +19,8 @@ const KediLabsContact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  // Clean stakeholder types with distinct IDs and proper form configurations
   const stakeholderTypes = [
     { 
       id: 'contact', 
@@ -89,12 +90,8 @@ const KediLabsContact = () => {
   };
 
   const handleFormTypeChange = (typeId) => {
-    console.log('Switching to form:', typeId); // Debug log
-    
-    // Force state update
+    console.log('Switching to form:', typeId);
     setActiveForm(typeId);
-    
-    // Clear form data when switching forms
     setFormData({
       name: '',
       email: '',
@@ -108,48 +105,58 @@ const KediLabsContact = () => {
       fundingAmount: '',
       investmentType: ''
     });
-    
-    // Clear submission status
     setSubmitStatus(null);
+    setErrorMessage(null);
+  };
+
+  const validateForm = () => {
+    const currentStakeholder = stakeholderTypes.find(type => type.id === activeForm);
+    const requiredFields = ['name', 'email', 'subject', 'message'].filter(field => 
+      currentStakeholder?.fields.includes(field)
+    );
+    if (currentStakeholder?.fields.includes('interests')) {
+      requiredFields.push('interests');
+    }
+    return requiredFields.every(field => formData[field].trim() !== '');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      setSubmitStatus('error');
+      setErrorMessage('Please fill in all required fields.');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
+    setErrorMessage(null);
 
     try {
-      const submissionData = {
-        ...formData,
-        stakeholderType: activeForm,
-        timestamp: new Date().toISOString(),
-        id: Date.now().toString()
-      };
+      const result = await sendContactEmail(formData, activeForm);
+      setSubmitStatus(result.status);
+      if (result.status === 'error') {
+        setErrorMessage(result.message);
+      }
 
-      // Simulate API call - replace with actual endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      console.log('Form submitted:', submissionData);
-      
-      setSubmitStatus('success');
-      
-      // Clear form after successful submission
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        organization: '',
-        message: '',
-        subject: '',
-        interests: '',
-        availability: '',
-        experience: '',
-        fundingAmount: '',
-        investmentType: ''
-      });
-      
+      if (result.status === 'success') {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          organization: '',
+          message: '',
+          subject: '',
+          interests: '',
+          availability: '',
+          experience: '',
+          fundingAmount: '',
+          investmentType: ''
+        });
+      }
     } catch (error) {
       setSubmitStatus('error');
+      setErrorMessage(error.message || 'An unexpected error occurred. Please try again later.');
       console.error('Submission error:', error);
     } finally {
       setIsSubmitting(false);
@@ -167,27 +174,21 @@ const KediLabsContact = () => {
 
   return (
     <div className="min-h-screen bg-white font-sans">
-      {/* Hero Section */}
       <section className="relative min-h-[60vh] overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        {/* Background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-800/70 to-slate-900/90 z-10"></div>
           <div className="absolute inset-0">
             <img
-              src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+              src="https://hvaa0fgs9i.ufs.sh/f/dnBu1xMbtIQ0Ij7TX4xPNXvOz2igs09lThn4DFJjwZtB8ufL"
               alt="Contact Kedi Labs"
               className="w-full h-full object-cover opacity-60"
             />
           </div>
-          
-          {/* Geometric patterns */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-20 right-20 w-64 h-64 border border-cyan-400 rotate-45 rounded-2xl"></div>
             <div className="absolute bottom-32 left-32 w-48 h-48 border border-teal-400 rotate-12 rounded-xl"></div>
           </div>
         </div>
-
-        {/* Breadcrumb */}
         <div className="relative z-20 pt-4">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex items-center text-sm text-slate-400">
@@ -197,8 +198,6 @@ const KediLabsContact = () => {
             </div>
           </div>
         </div>
-
-        {/* Main Content */}
         <div className="relative z-20 flex items-center min-h-[50vh]">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="max-w-4xl">
@@ -213,7 +212,6 @@ const KediLabsContact = () => {
         </div>
       </section>
 
-      {/* Contact Information Cards */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
@@ -241,11 +239,9 @@ const KediLabsContact = () => {
         </div>
       </section>
 
-      {/* Contact Form Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Stakeholder Types Selection */}
             <div className="lg:col-span-1">
               <h2 className="text-3xl font-light text-slate-800 mb-6">
                 Join Our <span className="text-green-600 font-semibold">Community</span>
@@ -253,7 +249,6 @@ const KediLabsContact = () => {
               <p className="text-slate-600 mb-8 leading-relaxed">
                 Choose how you'd like to connect with Kedi Labs. Select your stakeholder type below to access the appropriate form.
               </p>
-              
               <div className="space-y-3">
                 {stakeholderTypes.map((type, index) => {
                   const isActive = activeForm === type.id;
@@ -288,30 +283,25 @@ const KediLabsContact = () => {
               </div>
             </div>
 
-            {/* Contact Form */}
             <div className="lg:col-span-2">
               <div className="bg-gray-50 rounded-2xl p-8">
                 <h3 className="text-2xl font-semibold text-slate-800 mb-6">
                   {getCurrentStakeholder()?.label} Form
                   <span className="text-sm text-gray-500 ml-2">({activeForm})</span>
                 </h3>
-                    
                 {submitStatus === 'success' && (
                   <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" />
                     <span className="text-green-800">Thank you! Your message has been submitted successfully. We'll get back to you soon!</span>
                   </div>
                 )}
-
                 {submitStatus === 'error' && (
                   <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center">
                     <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0" />
-                    <span className="text-red-800">There was an error submitting your message. Please try again.</span>
+                    <span className="text-red-800">{errorMessage || 'An error occurred. Please try again later.'}</span>
                   </div>
                 )}
-
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Basic Information Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {shouldShowField('name') && (
                       <div>
@@ -329,7 +319,6 @@ const KediLabsContact = () => {
                         />
                       </div>
                     )}
-                    
                     {shouldShowField('email') && (
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -347,7 +336,6 @@ const KediLabsContact = () => {
                       </div>
                     )}
                   </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {shouldShowField('phone') && (
                       <div>
@@ -364,7 +352,6 @@ const KediLabsContact = () => {
                         />
                       </div>
                     )}
-                    
                     {shouldShowField('organization') && (
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -381,7 +368,6 @@ const KediLabsContact = () => {
                       </div>
                     )}
                   </div>
-
                   {shouldShowField('subject') && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -398,8 +384,6 @@ const KediLabsContact = () => {
                       />
                     </div>
                   )}
-
-                  {/* Volunteer-specific fields */}
                   {shouldShowField('interests') && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -423,7 +407,6 @@ const KediLabsContact = () => {
                       </select>
                     </div>
                   )}
-
                   {shouldShowField('availability') && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -444,7 +427,6 @@ const KediLabsContact = () => {
                       </select>
                     </div>
                   )}
-
                   {shouldShowField('experience') && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -460,8 +442,6 @@ const KediLabsContact = () => {
                       ></textarea>
                     </div>
                   )}
-
-                  {/* Funding-specific fields */}
                   {shouldShowField('fundingAmount') && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -483,7 +463,6 @@ const KediLabsContact = () => {
                       </select>
                     </div>
                   )}
-
                   {shouldShowField('investmentType') && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -505,7 +484,6 @@ const KediLabsContact = () => {
                       </select>
                     </div>
                   )}
-
                   {shouldShowField('message') && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -522,7 +500,6 @@ const KediLabsContact = () => {
                       ></textarea>
                     </div>
                   )}
-
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -547,7 +524,6 @@ const KediLabsContact = () => {
         </div>
       </section>
 
-      {/* Map Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -558,7 +534,6 @@ const KediLabsContact = () => {
               Located in the heart of Kisumu
             </p>
           </div>
-          
           <div className="bg-white rounded-2xl overflow-hidden shadow-xl">
             <div className="aspect-w-16 aspect-h-9 h-96">
               <iframe
@@ -572,7 +547,6 @@ const KediLabsContact = () => {
                 title="Kedi Labs Location"
               ></iframe>
             </div>
-            
             <div className="p-8 bg-gradient-to-r from-slate-50 to-gray-50">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="flex items-center">
@@ -582,7 +556,6 @@ const KediLabsContact = () => {
                     <p className="text-slate-600">Kisumu</p>
                   </div>
                 </div>
-                
                 <div className="flex items-center">
                   <Clock className="h-6 w-6 text-teal-600 mr-3" />
                   <div>
@@ -590,7 +563,6 @@ const KediLabsContact = () => {
                     <p className="text-slate-600">Mon - Fri: 8:00 AM - 6:00 PM</p>
                   </div>
                 </div>
-                
                 <div className="flex items-center">
                   <Globe className="h-6 w-6 text-teal-600 mr-3" />
                   <div>
@@ -604,7 +576,6 @@ const KediLabsContact = () => {
         </div>
       </section>
 
-      {/* Quick Response Section */}
       <section className="py-16 bg-slate-800 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-light mb-6">
@@ -613,7 +584,6 @@ const KediLabsContact = () => {
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             For urgent inquiries or immediate support, reach out to us directly via email or phone.
           </p>
-          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="mailto:contact@kedilabs.net"

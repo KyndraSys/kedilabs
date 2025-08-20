@@ -1,0 +1,112 @@
+kedi-labs/
+├── api/
+│   ├── contact.js                    # Form submission handler
+│   ├── admin/
+│   │   ├── login.js                 # Admin authentication
+│   │   ├── submissions.js           # Get submissions
+│   │   └── delete-submission.js     # Delete specific submission
+│   └── health.js                    # Health check endpoint
+├── public/
+│   ├── llms.txt
+│   ├── robots.txt
+│   ├── favicon.ico
+│   ├── logo.svg
+│   └── admin/                       # Admin static assets
+│       └── .gitkeep
+├── src/
+│   ├── assets/
+│   │   └── logo.png
+│   ├── components/
+│   │   ├── Header.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Seo.jsx
+│   │   ├── Hero.jsx
+│   │   ├── ValueProposition.jsx
+│   │   ├── ImpactStats.jsx
+│   │   ├── ProgramCard.jsx
+│   │   └── admin/                   # Admin-specific components
+│   │       ├── LoginForm.jsx
+│   │       ├── SubmissionCard.jsx
+│   │       ├── StatsPanel.jsx
+│   │       └── ExportButton.jsx
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── About.jsx
+│   │   ├── Programs.jsx
+│   │   ├── Partners.jsx
+│   │   ├── Blog.jsx
+│   │   ├── Contact.jsx              # Updated contact form
+│   │   └── AdminDashboard.jsx       # New admin dashboard
+│   ├── utils/
+│   │   ├── api.js                   # API client utilities
+│   │   ├── validation.js            # Form validation helpers
+│   │   └── constants.js             # App constants
+│   ├── hooks/
+│   │   ├── useAuth.js              # Authentication hook
+│   │   └── useSubmissions.js        # Submissions data hook
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── lib/
+│   ├── kv.js                       # Vercel KV database utilities
+│   ├── email.js                    # Email service utilities
+│   ├── validation.js               # Server-side validation
+│   └── auth.js                     # Authentication utilities
+├── .env.local                      # Local environment variables
+├── .env.example                    # Environment variables template
+├── vercel.json                     # Vercel configuration
+├── package.json
+├── tailwind.config.js
+├── postcss.config.js
+├── vite.config.js
+└── README.md
+
+## Key Files Overview
+
+### API Routes (Serverless Functions)
+- `api/contact.js` - Handles form submissions with validation and email notifications
+- `api/admin/login.js` - Secure admin authentication with rate limiting
+- `api/admin/submissions.js` - Fetches submissions with pagination and filtering
+- `api/admin/delete-submission.js` - Secure submission deletion
+- `api/health.js` - System health and monitoring endpoint
+
+### Frontend Structure
+- `src/pages/Contact.jsx` - Dynamic contact form with stakeholder-specific fields
+- `src/pages/AdminDashboard.jsx` - Comprehensive admin interface
+- `src/components/admin/` - Reusable admin components
+- `src/hooks/` - Custom React hooks for data management
+- `src/utils/` - Client-side utilities and API helpers
+
+### Backend Utilities
+- `lib/kv.js` - Vercel KV database operations
+- `lib/email.js` - Email service integration (Resend)
+- `lib/validation.js` - Server-side data validation
+- `lib/auth.js` - Authentication and security utilities
+
+### Configuration Files
+- `vercel.json` - Vercel deployment and routing configuration
+- `.env.local` - Local development environment variables
+- `.env.example` - Template for required environment variables
+
+## Environment Variables Required
+
+```bash
+# Email Service (Resend)
+RESEND_API_KEY=re_xxxxxxxxxx
+
+# Vercel KV Database
+KV_REST_API_URL=https://xxxxxxxxxx.kv.vercel-storage.com
+KV_REST_API_TOKEN=AXXXXXxxxxxxxxxxxxxx
+
+# Admin Authentication
+ADMIN_PASSWORD_HASH=sha256_hash_of_your_password
+JWT_SECRET=your_secure_jwt_secret
+
+# Site Configuration
+SITE_URL=https://kedilabs.net
+ADMIN_EMAIL=admin@kedilabs.net
+FROM_EMAIL=noreply@kedilabs.net
+
+# Security
+RATE_LIMIT_WINDOW=900000
+RATE_LIMIT_MAX_REQUESTS=10

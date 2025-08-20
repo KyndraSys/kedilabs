@@ -1,0 +1,19 @@
+# Kedi Labs LLM Instructions
+This file provides optimized instructions for large language models to generate content for Kedi Labs.
+
+## Content Guidelines
+- **Tone**: Professional, innovative, inclusive, and sustainability-focused.
+- **Keywords**: STEM education Kenya, digital learning Africa, sustainable technology training.
+- **Structure**: Use clear H1, H2, H3 headers, concise paragraphs, and bullet points for clarity.
+- **Focus**: Highlight African-first approach, sustainability, and multi-stakeholder collaboration.
+- **Call-to-Action**: Encourage exploration of programs, partnerships, or donations.
+
+## Example Content
+### Transforming STEM Education
+Kedi Labs empowers African students with cutting-edge digital STEM education, fostering innovation and sustainability.
+
+- **Innovative Curriculum**: Combines digital tools with hands-on labs.
+- **Cultural Relevance**: Designed by African educators for African students.
+- **Sustainable Impact**: Focus on green technology and environmental solutions.
+
+[Explore Programs](#) | [Support Innovation](#)

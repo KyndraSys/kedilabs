@@ -12,7 +12,7 @@ const Footer = () => {
     { name: 'About Us', href: '/about' },
     { name: 'Programs', href: '/programs' },
     { name: 'Partners', href: '/partners' },
-    { name: 'Blog', href: '/blog' },
+    // { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' }
   ];
 
@@ -24,7 +24,7 @@ const Footer = () => {
   ];
 
   const resources = [
-    { name: 'Featured Articles', href: '/blog/' },
+    // { name: 'Featured Articles', href: '/blog/' },
     // { name: 'Research Papers', href: '/resources/papers' },
     // { name: 'Case Studies', href: '/resources/cases' },
     // { name: 'White Papers', href: '/resources/whitepapers' }
@@ -192,7 +192,7 @@ const Footer = () => {
             </div>
 
             <div className="powered-by flex justify-center items-center space-x-3">
-              <span className="text-black hover:text-[#ff6200] hover:text-shadow-[0_0_5px_#ff6200,0_0_10px_#ff6200] text-sm transition-colors">
+              <span className="text-black hover:text-[#16a34a] hover:text-shadow-[0_0_5px_#ff6200,0_0_10px_#ff6200] text-xs transition-colors">
               Designed by
               </span>
               <a 
@@ -201,7 +201,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-black hover:text-[#ff6200] transition-colors"
               >
-                <img src={kyndra} alt="Kyndra Systems" className="h-6" />
+                <img src={kyndra} alt="Kyndra Systems" className="h-4" />
               </a>
             </div>
           </div>

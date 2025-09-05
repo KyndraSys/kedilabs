@@ -1,6 +1,22 @@
-import React, { useState } from 'react';
-import { ChevronRight, Phone, Mail, MapPin, Building2, Send, CheckCircle, AlertCircle, Loader2, Globe, Clock, MessageSquare, HandHeart, Calendar, Coins } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, Phone, Mail, MapPin, Building2, ArrowRight, Send, CheckCircle, AlertCircle, Loader2, Globe, Clock, MessageSquare, HandHeart, Calendar, Coins } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { sendContactEmail } from '../lib/email';
+
+const Seo = ({ title, description, canonical, schemaMarkup }) => {
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <link rel="canonical" href={canonical} />
+      {schemaMarkup && (
+        <script type="application/ld+json">
+          {JSON.stringify(schemaMarkup)}
+        </script>
+      )}
+    </Helmet>
+  );
+};
 
 const KediLabsContact = () => {
   const [activeForm, setActiveForm] = useState('contact');
@@ -12,42 +28,65 @@ const KediLabsContact = () => {
     message: '',
     subject: '',
     interests: '',
+    interestsOther: '',
     availability: '',
     experience: '',
     fundingAmount: '',
-    investmentType: ''
+    investmentType: '',
+    investmentTypeOther: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  // Function to handle navigation with cache busting
+  const handleNavigate = (url) => {
+    const cacheBustUrl = `${url}?t=${Date.now()}`; // Add timestamp to bust cache
+    window.location.href = cacheBustUrl; // Force full page reload
+  };
+
+  // Ensure correct title on page load
+  useEffect(() => {
+    document.title = "Contact Kedi Labs - STEM Education & Careers in Kenya";
+  }, []);
+
+  const scrollToForm = () => {
+    const formSection = document.getElementById('contact-form-section');
+    if (formSection) {
+      formSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   const stakeholderTypes = [
     { 
       id: 'contact', 
       label: 'Just Connect', 
       icon: Building2, 
-      description: 'Connect with Kedi Labs team to get involved in our mission',
+      description: 'Collaborate with Kedi Labs to advance STEM education in Kenya through digital learning',
       fields: ['name', 'email', 'phone', 'organization', 'subject', 'message']
     },
     { 
       id: 'volunteer', 
       label: 'Volunteer', 
       icon: HandHeart, 
-      description: 'Educators and individual learners who wish to contribute to our mission',
+      description: 'Join African educators to empower women in STEM and shape career pathways',
       fields: ['name', 'email', 'phone', 'organization', 'subject', 'interests', 'availability', 'experience', 'message']
     },
     { 
       id: 'events', 
       label: 'Join Our Events', 
       icon: Calendar, 
-      description: 'Discover our events to experience being part of the future experts',
+      description: 'Participate in events to explore STEM careers and sustainable technology training',
       fields: ['name', 'email', 'phone', 'organization', 'subject', 'interests', 'message']
     },
     { 
       id: 'funding', 
       label: 'Funding/Investor', 
       icon: Coins, 
-      description: 'Funding organizations and impact investors',
+      description: 'Support digital STEM education in Kenya’s national schools for sustainable impact',
       fields: ['name', 'email', 'phone', 'organization', 'subject', 'fundingAmount', 'investmentType', 'message']
     }
   ];
@@ -57,14 +96,15 @@ const KediLabsContact = () => {
       type: 'Office',
       icon: MapPin,
       title: 'Headquarters',
-      details: 'Kedi Labs Innovation Hub\nKisumu',
+      details: 'Kedi Labs Innovation Hub\nKisumu, Kenya',
+      link: 'https://maps.google.com/?q=Kisumu'
     },
     {
       type: 'General',
       icon: Mail,
       title: 'General Inquiries',
-      details: 'info@kedilabs.net',
-      link: 'mailto:info@kedilabs.net'
+      details: 'contact@kedilabs.net',
+      link: 'mailto:contact@kedilabs.net'
     },
     {
       type: 'Support',
@@ -78,7 +118,7 @@ const KediLabsContact = () => {
       icon: Building2,
       title: 'Partnerships',
       details: 'contact@kedilabs.net',
-      link: 'mailto:partners@kedilabs.net'
+      link: 'mailto:contact@kedilabs.net'
     }
   ];
 
@@ -100,10 +140,12 @@ const KediLabsContact = () => {
       message: '',
       subject: '',
       interests: '',
+      interestsOther: '',
       availability: '',
       experience: '',
       fundingAmount: '',
-      investmentType: ''
+      investmentType: '',
+      investmentTypeOther: ''
     });
     setSubmitStatus(null);
     setErrorMessage(null);
@@ -148,10 +190,12 @@ const KediLabsContact = () => {
           message: '',
           subject: '',
           interests: '',
+          interestsOther: '',
           availability: '',
           experience: '',
           fundingAmount: '',
-          investmentType: ''
+          investmentType: '',
+          investmentTypeOther: ''
         });
       }
     } catch (error) {
@@ -172,15 +216,72 @@ const KediLabsContact = () => {
     return currentStakeholder?.fields.includes(fieldName);
   };
 
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Kedi Labs - Kenya Digital Laboratories",
+    "alternateName": "Kenya Digital Labs",
+    "url": "https://kedilabs.net/contact",
+    "description": "Contact Kedi Labs to advance STEM education in Kenya through digital learning, empower women in STEM, explore career pathways, and partner with national schools for sustainable technology training.",
+    "foundingLocation": {
+      "@type": "Place",
+      "name": "Kisumu, Kenya"
+    },
+    "areaServed": "Kenya",
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "contactType": "General Inquiries",
+        "email": "contact@kedilabs.net",
+        "availableLanguage": ["English"]
+      },
+      {
+        "@type": "ContactPoint",
+        "contactType": "Technical Support",
+        "email": "contact@kedilabs.net",
+        "availableLanguage": ["English"]
+      },
+      {
+        "@type": "ContactPoint",
+        "contactType": "Partnerships",
+        "email": "contact@kedilabs.net",
+        "availableLanguage": ["English"]
+      },
+      {
+        "@type": "ContactPoint",
+        "contactType": "Office",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Kisumu",
+          "addressCountry": "KE"
+        },
+        "availableLanguage": ["English"]
+      }
+    ],
+    "keywords": "STEM education Kenya, digital learning Africa, sustainable technology training, women in STEM, STEM careers Kenya, STEM subject combination, national schools Kenya, STEM education partnerships"
+  };
+
   return (
     <div className="min-h-screen bg-white font-sans">
+      <Seo 
+        title="Contact Kedi Labs - STEM Education & Careers in Kenya"
+        description="Contact Kedi Labs to advance STEM education in Kenya through digital learning, empower women in STEM, explore career pathways, and partner with national schools for sustainable technology training."
+        canonical="https://kedilabs.net/contact"
+        schemaMarkup={schemaMarkup}
+      />
+      {/* Meta tags to prevent caching */}
+      <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+      <meta httpEquiv="Pragma" content="no-cache" />
+      <meta httpEquiv="Expires" content="0" />
+
+      {/* Hero Section */}
       <section className="relative min-h-[60vh] overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-800/70 to-slate-900/90 z-10"></div>
           <div className="absolute inset-0">
             <img
               src="https://hvaa0fgs9i.ufs.sh/f/dnBu1xMbtIQ0Ij7TX4xPNXvOz2igs09lThn4DFJjwZtB8ufL"
-              alt="Contact Kedi Labs"
+              alt="Contact Kedi Labs for STEM Education in Kenya"
               className="w-full h-full object-cover opacity-60"
             />
           </div>
@@ -192,7 +293,12 @@ const KediLabsContact = () => {
         <div className="relative z-20 pt-4">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex items-center text-sm text-slate-400">
-              <span className="hover:text-cyan-400 transition-colors cursor-pointer">Home</span>
+              <button 
+                onClick={() => handleNavigate('/')}
+                className="hover:text-cyan-400 transition-colors"
+              >
+                Home
+              </button>
               <ChevronRight className="h-4 w-4 mx-2" />
               <span className="text-cyan-400 font-medium">Contact</span>
             </div>
@@ -205,13 +311,63 @@ const KediLabsContact = () => {
                 Get in <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400 font-normal">Touch</span>
               </h1>
               <p className="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-3xl">
-                Ready to transform STEM education in Africa? Connect with us to explore partnerships, learning opportunities, or support our mission.
+                Join Kedi Labs to transform STEM education in Kenya. Connect to empower women in STEM, explore sustainable career pathways, or partner with national schools for digital learning.
               </p>
+              <button
+                onClick={scrollToForm}
+                className="group bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center backdrop-blur-sm border border-white/20 hover:border-white/30 mt-4"
+              >
+                Start Your STEM Journey
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
             </div>
           </div>
         </div>
       </section>
 
+      {/* STEM Careers and Women in STEM Section */}
+      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-light text-slate-800 mb-4">
+              Transforming <span className="text-green-600 font-semibold">STEM Education in Kenya</span>
+            </h2>
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+              Kedi Labs empowers African students with digital learning and sustainable technology training, designed by African educators for career-focused STEM pathways.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+              <h3 className="text-lg font-semibold text-slate-800 mb-2">STEM Career Pathways</h3>
+              <p className="text-slate-600 text-sm mb-4">
+                Discover high-demand STEM careers in Kenya, from robotics to data science. Learn how to choose subject combinations for Grades 9-10 to unlock sustainable career paths.
+              </p>
+              <button
+                onClick={() => handleNavigate('/programs')}
+                className="text-teal-600 hover:text-teal-700 font-medium text-sm inline-flex items-center transition-colors"
+              >
+                Explore STEM Programs
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </button>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+              <h3 className="text-lg font-semibold text-slate-800 mb-2">Women in STEM</h3>
+              <p className="text-slate-600 text-sm mb-4">
+                Empower the next generation of female scientists and engineers in Africa. Join our mentorship programs and virtual labs to promote gender equality in STEM.
+              </p>
+              <button
+                onClick={scrollToForm}
+                className="text-teal-600 hover:text-teal-700 font-medium text-sm inline-flex items-center transition-colors"
+              >
+                Support Women in STEM
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Info Section */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
@@ -226,8 +382,8 @@ const KediLabsContact = () => {
                   <a 
                     href={info.link}
                     className="text-teal-600 hover:text-teal-700 font-medium text-sm inline-flex items-center transition-colors"
-                    target={info.type === 'Office' ? '_blank' : undefined}
-                    rel={info.type === 'Office' ? 'noopener noreferrer' : undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {info.type === 'Office' ? 'View on Map' : 'Contact Now'}
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -239,15 +395,16 @@ const KediLabsContact = () => {
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      {/* Contact Form Section */}
+      <section className="py-16 bg-white" id="contact-form-section">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-1">
               <h2 className="text-3xl font-light text-slate-800 mb-6">
-                Join Our <span className="text-green-600 font-semibold">Community</span>
+                Join Our <span className="text-green-600 font-semibold">STEM Community</span>
               </h2>
               <p className="text-slate-600 mb-8 leading-relaxed">
-                Choose how you'd like to connect with Kedi Labs. Select your stakeholder type below to access the appropriate form.
+                Collaborate with Kedi Labs to advance digital STEM education in Kenya, empower women in STEM, or support sustainable technology training in national schools.
               </p>
               <div className="space-y-3">
                 {stakeholderTypes.map((type, index) => {
@@ -397,14 +554,31 @@ const KediLabsContact = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
                       >
                         <option value="">Select your interests</option>
-                        <option value="STEM Education">STEM Education</option>
-                        <option value="Mentorship">Mentorship</option>
+                        <option value="STEM Education">STEM Education Kenya</option>
+                        <option value="Women in STEM">Women in STEM</option>
+                        <option value="Career Pathways">STEM Career Pathways</option>
                         <option value="Curriculum Development">Curriculum Development</option>
-                        <option value="Technology Training">Technology Training</option>
+                        <option value="Sustainable Technology">Sustainable Technology Training</option>
                         <option value="Community Outreach">Community Outreach</option>
                         <option value="Research & Development">Research & Development</option>
                         <option value="Event Organization">Event Organization</option>
+                        <option value="Other">Other (please specify)</option>
                       </select>
+                      {formData.interests === 'Other' && (
+                        <div className="mt-3">
+                          <label className="block text-sm font-medium text-slate-700 mb-2">
+                            Please specify your interest
+                          </label>
+                          <input
+                            type="text"
+                            name="interestsOther"
+                            value={formData.interestsOther}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
+                            placeholder="Enter your specific interest"
+                          />
+                        </div>
+                      )}
                     </div>
                   )}
                   {shouldShowField('availability') && (
@@ -438,7 +612,7 @@ const KediLabsContact = () => {
                         value={formData.experience}
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors resize-none"
-                        placeholder="Tell us about your relevant experience, skills, or qualifications..."
+                        placeholder="Tell us about your experience in STEM education or sustainable technology..."
                       ></textarea>
                     </div>
                   )}
@@ -480,8 +654,23 @@ const KediLabsContact = () => {
                         <option value="Sponsorship">Sponsorship</option>
                         <option value="Partnership">Partnership</option>
                         <option value="Equipment/Resources">Equipment/Resources</option>
-                        <option value="Other">Other</option>
+                        <option value="Other">Other (please specify)</option>
                       </select>
+                      {formData.investmentType === 'Other' && (
+                        <div className="mt-3">
+                          <label className="block text-sm font-medium text-slate-700 mb-2">
+                            Please specify investment type
+                          </label>
+                          <input
+                            type="text"
+                            name="investmentTypeOther"
+                            value={formData.investmentTypeOther}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
+                            placeholder="Enter your specific investment type"
+                          />
+                        </div>
+                      )}
                     </div>
                   )}
                   {shouldShowField('message') && (
@@ -496,7 +685,7 @@ const KediLabsContact = () => {
                         onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors resize-none"
-                        placeholder="Tell us about your interests, goals, or how we can collaborate..."
+                        placeholder="Tell us how you want to collaborate on STEM education in Kenya..."
                       ></textarea>
                     </div>
                   )}
@@ -524,6 +713,7 @@ const KediLabsContact = () => {
         </div>
       </section>
 
+      {/* Innovation Hub Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -531,7 +721,7 @@ const KediLabsContact = () => {
               Visit Our <span className="text-green-600 font-semibold">Innovation Hub</span>
             </h2>
             <p className="text-lg text-slate-600">
-              Located in the heart of Kisumu
+              Located in Kisumu, driving sustainable STEM education in Kenya
             </p>
           </div>
           <div className="bg-white rounded-2xl overflow-hidden shadow-xl">
@@ -544,7 +734,7 @@ const KediLabsContact = () => {
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Kedi Labs Location"
+                title="Kedi Labs Innovation Hub Location"
               ></iframe>
             </div>
             <div className="p-8 bg-gradient-to-r from-slate-50 to-gray-50">
@@ -553,7 +743,7 @@ const KediLabsContact = () => {
                   <MapPin className="h-6 w-6 text-teal-600 mr-3" />
                   <div>
                     <p className="font-semibold text-slate-800">Address</p>
-                    <p className="text-slate-600">Kisumu</p>
+                    <p className="text-slate-600">Kisumu, Kenya</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -576,29 +766,41 @@ const KediLabsContact = () => {
         </div>
       </section>
 
+      {/* Quick Response CTA Section */}
       <section className="py-16 bg-slate-800 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-light mb-6">
-            Need a <span className="text-teal-400 font-semibold">quick response</span>?
+            Need a <span className="text-teal-400 font-semibold">Quick Response</span>?
           </h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            For urgent inquiries or immediate support, reach out to us directly via email or phone.
+            Reach out to Kedi Labs for urgent inquiries about STEM education, partnerships, or sustainable technology training.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="mailto:contact@kedilabs.net"
-              className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center"
+              className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center group"
             >
               <Mail className="h-5 w-5 mr-2" />
               Email Us Now
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
             <a 
-              href="tel:+254700123456"
-              className="border-2 border-teal-400 hover:bg-teal-400 hover:text-slate-800 text-teal-400 px-8 py-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center"
+              href="tel:+254 711731625"
+              className="border-2 border-teal-400 hover:bg-teal-400 hover:text-slate-800 text-teal-400 px-8 py-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center group"
             >
               <Phone className="h-5 w-5 mr-2" />
               Call Us
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
+          </div>
+          <div className="mt-6">
+            {/* <button
+              onClick={() => handleNavigate('/donate')}
+              className="text-teal-400 hover:text-teal-300 font-medium text-sm inline-flex items-center transition-colors"
+            >
+              Support Innovation
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </button> */}
           </div>
         </div>
       </section>

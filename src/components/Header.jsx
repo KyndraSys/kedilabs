@@ -65,7 +65,7 @@ function Header() {
               >
                 Partners
               </Link>
-              <Link 
+              {/* <Link 
                 to="/blog" 
                 className={`font-medium transition-colors duration-200 ${
                   location.pathname.startsWith('/blog') 
@@ -74,7 +74,7 @@ function Header() {
                 }`}
               >
                 Blog
-              </Link>
+              </Link> */}
               <Link 
                 to="/contact" 
                 className={`font-medium transition-colors duration-200 ${
@@ -151,7 +151,7 @@ function Header() {
                 >
                   Partners
                 </Link>
-                <Link
+                {/* <Link
                   to="/blog"
                   className={`block px-3 py-2 rounded-md transition-colors font-medium ${
                     location.pathname.startsWith('/blog') 
@@ -161,7 +161,7 @@ function Header() {
                   onClick={toggleMobileMenu}
                 >
                   Blog
-                </Link>
+                </Link> */}
                 <Link
                   to="/contact"
                   className={`block px-3 py-2 rounded-md transition-colors font-medium ${

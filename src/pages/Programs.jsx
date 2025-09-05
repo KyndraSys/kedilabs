@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ChevronRight, ArrowRight } from 'lucide-react';
+import Seo from '../components/Seo';
 
 const KediLabsPrograms = () => {
+  // Function to handle navigation with cache busting
+  const handleNavigate = (url) => {
+    const cacheBustUrl = `${url}?t=${Date.now()}`; // Add timestamp to bust cache
+    window.location.href = cacheBustUrl; // Force full page reload
+  };
+
   const corePrograms = [
     {
       id: 'advocacy',
@@ -39,24 +46,81 @@ const KediLabsPrograms = () => {
     { value: '5+', label: 'Counties in Kenya' }
   ];
 
+  // Ensure correct title on page load
+  useEffect(() => {
+    document.title = "Kedi Labs Programs - Transforming STEM Education in Kenya";
+  }, []);
+
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Kedi Labs - Kenya Digital Laboratories",
+    "alternateName": "Kenya Digital Labs",
+    "url": "https://kedilabs.net/programs",
+    "description": "Explore Kedi Labs’ programs driving STEM education transformation in Kenya through digital education policy advocacy, educator training, and virtual laboratory solutions, empowering students and educators across Kenya.",
+    "foundingLocation": {
+      "@type": "Place",
+      "name": "Kisumu, Kenya"
+    },
+    "areaServed": "Kenya",
+    "serviceType": [
+      "STEM Education Policy Advocacy",
+      "Educator Training Programs",
+      "Virtual Laboratory Solutions",
+      "Digital Learning Toolkits"
+    ],
+    "audience": [
+      "STEM Students",
+      "Educators",
+      "Educational Institutions",
+      "Government",
+      "Development Partners"
+    ],
+    "keywords": "Kedi Labs programs, STEM education Kenya, digital education advocacy, virtual labs Kenya, educator training Kenya, STEM programs Africa"
+  };
+
+  // SEO Component placeholder
+  const Seo = ({ title, description, canonical, schemaMarkup }) => (
+    <>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <link rel="canonical" href={canonical} />
+      <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>
+    </>
+  );
+
   return (
     <div className="min-h-screen bg-white">
+      <Seo 
+        title="Kedi Labs Programs - Transforming STEM Education in Kenya"
+        description="Explore Kedi Labs’ programs driving STEM education transformation in Kenya through digital education policy advocacy, educator training, and virtual laboratory solutions, empowering students and educators across Kenya."
+        canonical="https://kedilabs.net/programs"
+        schemaMarkup={schemaMarkup}
+      />
+      {/* Meta tags to prevent caching */}
+      <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+      <meta httpEquiv="Pragma" content="no-cache" />
+      <meta httpEquiv="Expires" content="0" />
+
       {/* Navigation */}
       <div className="bg-gray-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
           <div className="flex items-center text-sm text-gray-600">
-            <a href="/" className="hover:text-green-600 transition-colors">Home</a>
+            <button 
+              onClick={() => handleNavigate('/')}
+              className="hover:text-green-600 transition-colors"
+            >
+              Home
+            </button>
             <ChevronRight className="h-4 w-4 mx-2" />
             <span className="text-green-600 font-medium">Programs</span>
           </div>
         </div>
       </div>
 
-     {/* Hero Section */}
+      {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 overflow-hidden">
-        {/* Floating network elements like Cisco */}
         <div className="absolute inset-0 overflow-hidden">
-          {/* Network lines */}
           <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 1200 600">
             <path d="M200,100 Q400,50 600,150 T1000,200" stroke="white" strokeWidth="1" fill="none"/>
             <path d="M100,300 Q300,250 500,350 T900,400" stroke="rgba(34,197,94,0.3)" strokeWidth="1" fill="none"/>
@@ -73,13 +137,13 @@ const KediLabsPrograms = () => {
             <h1 className="text-6xl md:text-7xl font-light text-white mb-6 leading-tight">
               Our Programs
             </h1>
-            
             <p className="text-2xl text-gray-300 mb-0 leading-relaxed">
               KEDI Labs delivers comprehensive programs focused on advocacy, training, and access to advance STEM education across Kenya through strategic digitization initiatives.
             </p>
           </div>
         </div>
       </section>
+
       {/* Core Programs */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -98,7 +162,6 @@ const KediLabsPrograms = () => {
               
               return (
                 <div key={program.id} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                  {/* Image Side */}
                   <div className={`${isEven ? 'order-1' : 'order-2'}`}>
                     <div className="relative">
                       <img 
@@ -114,7 +177,6 @@ const KediLabsPrograms = () => {
                     </div>
                   </div>
 
-                  {/* Content Side */}
                   <div className={`${isEven ? 'order-2' : 'order-1'}`}>
                     <div className="mb-4">
                       <span className="text-sm text-green-600 font-medium">{program.focus}</span>
@@ -126,13 +188,13 @@ const KediLabsPrograms = () => {
                       {program.description}
                     </p>
 
-                    <a 
-                      href="/contact"
+                    <button 
+                      onClick={() => handleNavigate('/contact')}
                       className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-medium transition-all duration-300 group shadow-lg hover:shadow-xl"
                     >
                       Learn More About This Program
                       <ArrowRight className="ml-3 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                    </a>
+                    </button>
                   </div>
                 </div>
               );
@@ -202,14 +264,14 @@ const KediLabsPrograms = () => {
               </div>
 
               <div className="mt-10 flex space-x-4">
-                <a 
-                  href="/contact"
+                <button 
+                  onClick={() => handleNavigate('/contact')}
                   className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Partner With Us
-                </a>
+                </button>
                 <a
-                  href='https://hvaa0fgs9i.ufs.sh/f/dnBu1xMbtIQ0CGt8GwEIFJjK2yWd6uQSYcGTq7vwV19CNOxh'
+                  href="https://hvaa0fgs9i.ufs.sh/f/dnBu1xMbtIQ0CGt8GwEIFJjK2yWd6uQSYcGTq7vwV19CNOxh"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-8 py-4 rounded-lg font-medium transition-all duration-300"
@@ -233,16 +295,16 @@ const KediLabsPrograms = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <a 
-              href="/contact"
+            <button 
+              onClick={() => handleNavigate('/contact')}
               className="bg-white hover:bg-gray-50 text-green-600 px-10 py-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center group shadow-lg hover:shadow-xl"
             >
               Schedule Consultation
               <ArrowRight className="ml-3 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </a>
+            </button>
             
             <a
-              href='https://hvaa0fgs9i.ufs.sh/f/dnBu1xMbtIQ0CGt8GwEIFJjK2yWd6uQSYcGTq7vwV19CNOxh'
+              href="https://hvaa0fgs9i.ufs.sh/f/dnBu1xMbtIQ0CGt8GwEIFJjK2yWd6uQSYcGTq7vwV19CNOxh"
               target="_blank"
               rel="noopener noreferrer"
               className="border-2 border-white text-white hover:bg-white hover:text-green-600 px-10 py-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center group"

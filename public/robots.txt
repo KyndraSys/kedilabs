@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /contact
+Allow: /programs
+Allow: /about
+Allow: /partners
+Disallow: /admin
+Disallow: /api
+Disallow: /private
+Sitemap: https://kedilabs.net/sitemap.xml

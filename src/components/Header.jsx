@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Search } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import KediLabsSearch from './kediLabsSearch';
 
 function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
   };
 
   const isActiveLink = (path) => location.pathname === path;
@@ -65,16 +71,6 @@ function Header() {
               >
                 Partners
               </Link>
-              {/* <Link 
-                to="/blog" 
-                className={`font-medium transition-colors duration-200 ${
-                  location.pathname.startsWith('/blog') 
-                    ? 'text-blue-600' 
-                    : 'text-gray-700 hover:text-blue-600'
-                }`}
-              >
-                Blog
-              </Link> */}
               <Link 
                 to="/contact" 
                 className={`font-medium transition-colors duration-200 ${
@@ -85,20 +81,38 @@ function Header() {
               >
                 Contact
               </Link>
+              
+              {/* Search Button */}
+              <button
+                onClick={toggleSearch}
+                className="p-2 text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                aria-label="Open search"
+              >
+                <Search className="h-5 w-5" />
+              </button>
             </nav>
 
             {/* Mobile Menu Toggle */}
-            <button 
-              className="lg:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200" 
-              onClick={toggleMobileMenu}
-              aria-label="Toggle mobile menu"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
+            <div className="flex items-center lg:hidden">
+              <button
+                onClick={toggleSearch}
+                className="p-2 mr-2 text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                aria-label="Open search"
+              >
+                <Search className="h-5 w-5" />
+              </button>
+              <button 
+                className="p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200" 
+                onClick={toggleMobileMenu}
+                aria-label="Toggle mobile menu"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -151,17 +165,6 @@ function Header() {
                 >
                   Partners
                 </Link>
-                {/* <Link
-                  to="/blog"
-                  className={`block px-3 py-2 rounded-md transition-colors font-medium ${
-                    location.pathname.startsWith('/blog') 
-                      ? 'text-blue-600 bg-blue-50' 
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                  }`}
-                  onClick={toggleMobileMenu}
-                >
-                  Blog
-                </Link> */}
                 <Link
                   to="/contact"
                   className={`block px-3 py-2 rounded-md transition-colors font-medium ${
@@ -173,11 +176,26 @@ function Header() {
                 >
                   Contact
                 </Link>
+                
+                {/* Mobile Search Button */}
+                <button
+                  onClick={() => {
+                    toggleMobileMenu();
+                    toggleSearch();
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md transition-colors font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center"
+                >
+                  <Search className="h-5 w-5 mr-2" />
+                  Search
+                </button>
               </div>
             </div>
           </div>
         )}
       </header>
+      
+      {/* Search Component */}
+      {isSearchOpen && <KediLabsSearch onClose={toggleSearch} />}
     </>
   );
 }
